@@ -33,18 +33,23 @@ let ListingsService = class ListingsService {
     async findNearby(lat, lng, radiusKm = 20) {
         return this.prisma.$queryRaw `
       SELECT l.*, 
-             u.fullName as "donorName",
-             ST_Distance(
-               ST_MakePoint(l.longitude, l.latitude)::geography,
-               ST_MakePoint(${lng}, ${lat})::geography
-             ) / 1000 as distance
+             u."fullName" as "donorName",
+             (
+               6371 * acos(
+                 cos(radians(${lat})) * cos(radians(l.latitude)) * 
+                 cos(radians(l.longitude) - radians(${lng})) + 
+                 sin(radians(${lat})) * sin(radians(l.latitude))
+               )
+             ) as distance
       FROM "Listing" l
       JOIN "User" u ON l."donorId" = u.id
-      WHERE ST_DWithin(
-        ST_MakePoint(l.longitude, l.latitude)::geography,
-        ST_MakePoint(${lng}, ${lat})::geography,
-        ${radiusKm * 1000}
-      )
+      WHERE (
+        6371 * acos(
+          cos(radians(${lat})) * cos(radians(l.latitude)) * 
+          cos(radians(l.longitude) - radians(${lng})) + 
+          sin(radians(${lat})) * sin(radians(l.latitude))
+        )
+      ) <= ${radiusKm}
       AND l.status = 'AVAILABLE'
       ORDER BY distance ASC;
     `;

@@ -1,0 +1,10 @@
+.vercel
+node_modules
+flutter/
+backend/node_modules
+backend/dist
+flutter_app/build
+flutter_app/.dart_tool
+flutter_app/pubspec.lock
+.env
+backend/.env

@@ -7,8 +7,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/flutter_app/build/web/$1",
-      "check": true
+      "destination": "/flutter_app/build/web/$1"
     },
     {
       "source": "/(.*)",

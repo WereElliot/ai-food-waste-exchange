@@ -30,13 +30,14 @@ dependencies:
   image_picker: ^1.0.7
   cached_network_image: ^3.3.1
   flutter_spinkit: ^5.2.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   
   # Auth & Realtime
   supabase_flutter: ^2.3.4
   
   # Misc
   logger: ^2.0.2
+  google_fonts: ^8.0.2
 
 dev_dependencies:
   flutter_test:

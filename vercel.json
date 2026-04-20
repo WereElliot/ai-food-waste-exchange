@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/src/main.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/flutter_app/build/web/$1",
+      "check": true
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/flutter_app/build/web/index.html"
+    }
+  ]
+}

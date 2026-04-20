@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-id"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [postgis(version: "3.4.1")]
+}
+
+enum UserRole {
+  DONOR
+  RECEIVER
+  NGO_CHARITY
+  COMPOSTER
+  ADMIN
+}
+
+enum SpoilageRisk {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ListingStatus {
+  AVAILABLE
+  CLAIMED
+  PICKED_UP
+  EXPIRED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  phoneNumber   String?   @unique
+  fullName      String
+  role          UserRole  @default(RECEIVER)
+  avatarUrl     String?
+  locationLat   Float?
+  locationLng   Float?
+  listings      Listing[]
+  claims        Claim[]
+  notifications Notification[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Listing {
+  id              String         @id @default(uuid())
+  title           String
+  description     String
+  photoUrl        String
+  quantity        String
+  itemType        String
+  expiryDate      DateTime?
+  spoilageRisk    SpoilageRisk?
+  status          ListingStatus  @default(AVAILABLE)
+  
+  // Geospatial coordinates
+  latitude        Float
+  longitude       Float
+  
+  donorId         String
+  donor           User           @relation(fields: [donorId], references: [id])
+  
+  claims          Claim[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([latitude, longitude])
+}
+
+model Claim {
+  id          String    @id @default(uuid())
+  listingId   String
+  listing     Listing   @relation(fields: [listingId], references: [id])
+  receiverId  String
+  receiver    User      @relation(fields: [receiverId], references: [id])
+  status      String    @default("PENDING") // PENDING, ACCEPTED, REJECTED, COMPLETED
+  claimTime   DateTime  @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Impact {
+  id              String   @id @default(uuid())
+  foodSavedKg     Float
+  co2ReducedKg    Float
+  mealsProvided   Int
+  recordedAt      DateTime @default(now())
+}

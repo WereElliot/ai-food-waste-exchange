@@ -1,0 +1,8 @@
+{
+  "name": "food-waste-exchange-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "./flutter/bin/flutter build web --release",
+    "install": "if [ -d \"flutter\" ]; then cd flutter && git pull && cd .. ; else git clone https://github.com/flutter/flutter.git; fi && ./flutter/bin/flutter doctor && ./flutter/bin/flutter clean && ./flutter/bin/flutter config --enable-web"
+  }
+}
